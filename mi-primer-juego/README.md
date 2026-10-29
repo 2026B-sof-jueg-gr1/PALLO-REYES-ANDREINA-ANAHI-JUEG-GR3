@@ -56,9 +56,16 @@ Los créditos de la música aparecen en la pantalla final (editables en `AUDIO.c
 
 ## GitHub Pages
 
-Sube todo a la carpeta `mi-primer-juego/` del repo (`git add .`, `git commit`, `git push`) y activa
-Settings, Pages, rama `main`, carpeta `/ (root)`. La dirección termina en `/mi-primer-juego/`.
-El archivo `game.js` de la prueba inicial ya no se usa y se puede borrar.
+El repositorio incluye el workflow
+[`deploy-pages.yml`](../.github/workflows/deploy-pages.yml), que publica
+automáticamente el contenido de `mi-primer-juego/` cada vez que hay cambios en
+la rama `main`.
+
+Antes del primer despliegue, en GitHub entra a **Settings > Pages** y selecciona
+**GitHub Actions** en **Build and deployment > Source**. Esta configuración es
+obligatoria: el workflow no puede habilitar Pages automáticamente usando el
+token estándar de GitHub Actions.
+
 
 ## Pendiente para próximas entregas
 
