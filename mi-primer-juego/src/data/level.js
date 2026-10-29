@@ -53,10 +53,12 @@ export const NIVEL = {
   recuerdos: [
     { id: 'farol',    x: 560,  y: 560, tipo: 'feliz',  icono: 'farol',    habilidad: 'luz' },
     { id: 'botas',    x: 1260, y: 560, tipo: 'feliz',  icono: 'botas',    habilidad: 'salto' },
+    { id: 'silbato',  x: 940,  y: 500, tipo: 'feliz',  icono: 'silbato' },
     { id: 'cuaderno', x: 3020, y: 420, tipo: 'triste', icono: 'cuaderno', region: 'A' },
     { id: 'pieza1',   x: 3820, y: 420, tipo: 'pieza',  icono: 'pieza',    parte: 0 },
     { id: 'pieza2',   x: 4165, y: 270, tipo: 'pieza',  icono: 'pieza',    parte: 1 },
     { id: 'pieza3',   x: 4555, y: 360, tipo: 'pieza',  icono: 'pieza',    parte: 2 },
+    { id: 'mascota',  x: 4700, y: 420, tipo: 'triste', icono: 'pelota', disponibleDesde: 'caja' },
   ],
 
   // Muro invisible de niebla: se abre cuando Sylva tiene el farol

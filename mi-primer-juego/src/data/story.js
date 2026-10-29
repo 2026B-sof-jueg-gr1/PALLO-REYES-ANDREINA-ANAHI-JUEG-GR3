@@ -35,6 +35,17 @@ export const HISTORIA = {
         'Un día dejé de venir. No recuerdo por qué.',
       ],
     },
+    silbato: {
+      tono: 'feliz',
+      paginas: [
+        'Un silbato de madera, pequeño y gastado.\n' +
+        'Un niño lo usaba para convertir el bosque en un reino.',
+        'Miraba las aves entre las ramas y les inventaba nombres.\n' +
+        'Cuando los pájaros silbaban, él respondía con una sonrisa.',
+        'Después reía, tranquilo, porque por un momento todo el bosque\n' +
+        'parecía jugar con él.',
+      ],
+    },
     cuaderno: {
       tono: 'triste',
       paginas: [
@@ -54,6 +65,32 @@ export const HISTORIA = {
     pieza3: {
       tono: 'triste',
       paginas: ['La última vez que sonó, alguien se estaba despidiendo.'],
+    },
+    mascota: {
+      tono: 'triste',
+      paginas: [
+        'Una pelota de juguete, cubierta de tierra y hojas.\n' +
+        'Todavía conserva las marcas de unos dientes pequeños.',
+        'Alguien corría detrás de ella entre los árboles.\n' +
+        'Era feliz. Yo también lo era cuando lo veía volver.',
+        'No recuerdo su nombre, pero recuerdo sus patas sobre la tierra\n' +
+        'y la alegría con la que esperaba que lanzara la pelota.',
+      ],
+      eleccion: {
+        pregunta: '¿Quieres conservar este recuerdo?',
+        opciones: [
+          {
+            etiqueta: 'Conservarlo',
+            texto: 'No quiero olvidarlo.\nConservaré este recuerdo y la alegría que dejó aquí.',
+            resultado: 'La pelota queda bajo una luz tenue, como una pequeña señal de que todavía es recordado.',
+          },
+          {
+            etiqueta: 'Dejarlo ir',
+            texto: 'Puede descansar entre los árboles.\nLo dejo ir con cariño.',
+            resultado: 'La pelota desaparece entre las hojas y el bosque vuelve a quedar en silencio.',
+          },
+        ],
+      },
     },
   },
 

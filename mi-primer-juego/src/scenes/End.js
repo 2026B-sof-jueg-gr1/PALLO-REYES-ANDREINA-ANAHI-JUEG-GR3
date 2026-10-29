@@ -17,6 +17,7 @@ export class EndScene extends Phaser.Scene {
 
   init(datos) {
     this.final = datos && typeof datos.final === 'number' ? datos.final : 0;
+    this.mascotaConservada = !!(datos && datos.mascotaConservada);
   }
 
   create() {
@@ -27,12 +28,12 @@ export class EndScene extends Phaser.Scene {
 
     // Cuidar todo: luz y penumbra juntas. Dejar ir: un bosque más claro.
     this.fondo = new Fondo(this, { estatico: true });
-    this.fondo.mezcla(this.final === 0 ? 0.55 : 0);
+    this.fondo.mezcla((this.final === 0 ? 0.55 : 0) + (this.mascotaConservada ? 0.2 : 0));
     this.motas = new Motas(this, 36);
     this.add
       .rectangle(ancho / 2, alto / 2, ancho, alto, LUZ.colorSereno)
       .setDepth(29)
-      .setAlpha(this.final === 0 ? 0.14 : 0.04)
+      .setAlpha((this.final === 0 ? 0.14 : 0.04) + (this.mascotaConservada ? 0.08 : 0))
       .setBlendMode('ADD');
     this.add.image(ancho / 2, alto / 2, 'vineta').setDepth(36).setScale(1.2);
 

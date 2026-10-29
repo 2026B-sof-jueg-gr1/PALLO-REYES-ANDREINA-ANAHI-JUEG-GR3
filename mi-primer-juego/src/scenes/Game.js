@@ -45,7 +45,17 @@ export class GameScene extends Phaser.Scene {
     const { ancho, alto } = PANTALLA;
 
     // ----- estado del juego -----
-    this.estado = { farol: false, botas: false, cuaderno: false, caja: false, piezas: 0, partes: [false, false, false] };
+    this.estado = {
+      farol: false,
+      botas: false,
+      silbato: false,
+      cuaderno: false,
+      caja: false,
+      mascota: false,
+      mascotaConservada: false,
+      piezas: 0,
+      partes: [false, false, false],
+    };
     this.regiones = NIVEL.regiones.map((r) => ({ ...r, estado: 'oscuro' }));
     this.puntoSeguro = NIVEL.puntosSeguros[0];
     this.congelada = true;          // Sylva no se mueve hasta que termina la introducción
@@ -205,8 +215,9 @@ export class GameScene extends Phaser.Scene {
     this.recuerdos = [];
     for (const def of NIVEL.recuerdos) {
       const tipoBrillo = def.tipo === 'feliz' ? 'glow_dorado' : def.tipo === 'triste' ? 'glow_violeta' : 'glow_blanco';
-      const glow = this.add.image(def.x, def.y, tipoBrillo).setDepth(PROFUNDIDAD.recuerdo).setBlendMode('ADD');
-      const icono = this.add.image(def.x, def.y, `ic_${def.icono}`).setDepth(PROFUNDIDAD.recuerdo + 1);
+      const oculto = def.disponibleDesde === 'caja';
+      const glow = this.add.image(def.x, def.y, tipoBrillo).setDepth(PROFUNDIDAD.recuerdo).setBlendMode('ADD').setVisible(!oculto);
+      const icono = this.add.image(def.x, def.y, `ic_${def.icono}`).setDepth(PROFUNDIDAD.recuerdo + 1).setVisible(!oculto);
 
       this.tweens.add({ targets: [glow, icono], y: def.y - 7, duration: 1700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
       this.tweens.add({ targets: glow, scale: 1.25, alpha: 0.65, duration: 1300, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
@@ -345,6 +356,7 @@ export class GameScene extends Phaser.Scene {
     let mejor = RECUERDOS.radioInteraccion;
     for (const r of this.recuerdos) {
       if (r.recogido) continue;
+      if (r.def.disponibleDesde === 'caja' && !this.estado.caja) continue;
       const d = Phaser.Math.Distance.Between(this.jugadora.x, this.jugadora.y, r.def.x, r.def.y);
       if (d < mejor) {
         mejor = d;
@@ -396,10 +408,26 @@ export class GameScene extends Phaser.Scene {
         e.botas = true;
         this.brotar(def.x, NIVEL.sueloEn(def.x), 'arbol');
         break;
+      case 'silbato':
+        e.silbato = true;
+        this.aparecerAves(def.x, def.y);
+        break;
       case 'cuaderno':
         e.cuaderno = true;
         this.volverSerena(def.region);
         break;
+      case 'mascota':
+        e.mascota = true;
+        this.ui.actualizarContador(e);
+        this.ui.elegir(HISTORIA.recuerdos.mascota.eleccion.pregunta, HISTORIA.recuerdos.mascota.eleccion.opciones, (indice) => {
+          e.mascotaConservada = indice === 0;
+          if (e.mascotaConservada) {
+            this.volverSerena('B');
+            this.conservarRecuerdoMascota(def);
+          }
+          this.continuarDespuesDeMascota();
+        });
+        return;
       default:
         // piezas de la caja musical
         e.piezas++;
@@ -408,6 +436,55 @@ export class GameScene extends Phaser.Scene {
         break;
     }
     this.ui.actualizarContador(e);
+  }
+
+  aparecerAves(x, y) {
+    this.avesRecuerdo = [];
+    const rutas = [
+      { inicioX: -260, inicioY: -40, finalX: -120, finalY: -125 },
+      { inicioX: -170, inicioY: -125, finalX: 20, finalY: -55 },
+      { inicioX: -70, inicioY: -65, finalX: 170, finalY: -145 },
+      { inicioX: 45, inicioY: -145, finalX: 290, finalY: -75 },
+      { inicioX: 150, inicioY: -55, finalX: 390, finalY: -175 },
+      { inicioX: 250, inicioY: -175, finalX: 500, finalY: -105 },
+    ];
+
+    for (let i = 0; i < 6; i++) {
+      const ruta = rutas[i];
+      const ave = this.add.image(x + ruta.inicioX, y + ruta.inicioY, 'ave_recuerdo')
+        .setDepth(PROFUNDIDAD.decorado)
+        .setAlpha(0.9);
+      this.avesRecuerdo.push(ave);
+
+      this.tweens.add({
+        targets: ave,
+        x: x + ruta.finalX,
+        y: y + ruta.finalY,
+        duration: 3200 + i * 260,
+        delay: i * 180,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      });
+    }
+  }
+
+  conservarRecuerdoMascota(def) {
+    const luz = this.add.image(def.x, def.y, 'glow_violeta')
+      .setDepth(PROFUNDIDAD.decorado)
+      .setAlpha(0.28)
+      .setScale(0.8);
+    this.tweens.add({ targets: luz, alpha: 0.42, scale: 1.05, duration: 1300, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+  }
+
+  continuarDespuesDeMascota() {
+    this.recogiendo = false;
+    this.musica.pasarAFinal();
+    this.time.delayedCall(700, () => {
+      this.ui.mostrarDialogo(HISTORIA.descubrimiento.paginas, HISTORIA.descubrimiento.tono, () => {
+        this.ui.elegir(HISTORIA.eleccion.pregunta, HISTORIA.eleccion.opciones, (indice) => this.terminar(indice));
+      });
+    });
   }
 
   // Con el farol, al acercarse al umbral la niebla se aparta por sí sola
@@ -469,16 +546,13 @@ export class GameScene extends Phaser.Scene {
 
       this.time.delayedCall(segundos * 700, () => {
         this.ui.mostrarDialogo(HISTORIA.cajaArmada.paginas, HISTORIA.cajaArmada.tono, () => {
-          this.volverSerena('B');
           this.zoomMeta = PANTALLA.zoomCamara;
-          this.time.delayedCall(2200, () => {
-            this.ui.mostrarDialogo(HISTORIA.descubrimiento.paginas, HISTORIA.descubrimiento.tono, () => {
-              this.musica.pasarAFinal();
-              this.time.delayedCall(700, () => {
-                this.ui.elegir(HISTORIA.eleccion.pregunta, HISTORIA.eleccion.opciones, (indice) => this.terminar(indice));
-              });
-            });
-          });
+          this.recogiendo = false;
+          const mascota = this.recuerdos.find((r) => r.def.id === 'mascota');
+          if (mascota) {
+            mascota.glow.setVisible(true);
+            mascota.icono.setVisible(true);
+          }
         });
       });
     });
@@ -488,7 +562,7 @@ export class GameScene extends Phaser.Scene {
     this.congelada = true;
     this.ui.fundido(1, 1600, () => {
       this.scene.stop('UI');
-      this.scene.start('End', { final: indice });
+      this.scene.start('End', { final: indice, mascotaConservada: this.estado.mascotaConservada });
     });
   }
 

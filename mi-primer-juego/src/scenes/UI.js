@@ -13,8 +13,8 @@ import { HISTORIA } from '../data/story.js';
 import { camaraFija } from '../systems/Pantalla.js';
 
 const TONOS = { feliz: 0xf3d17a, triste: 0x9a8cf0, neutro: 0xbfe9e0 };
-const TOTAL_FELICES = 2;
-const TOTAL_TRISTES = 2;
+const TOTAL_FELICES = 3;
+const TOTAL_TRISTES = 3;
 
 export class UIScene extends Phaser.Scene {
   constructor() {
@@ -101,8 +101,8 @@ export class UIScene extends Phaser.Scene {
   }
 
   actualizarContador(e) {
-    const felices = (e.farol ? 1 : 0) + (e.botas ? 1 : 0);
-    const tristes = (e.cuaderno ? 1 : 0) + (e.caja ? 1 : 0);
+    const felices = (e.farol ? 1 : 0) + (e.botas ? 1 : 0) + (e.silbato ? 1 : 0);
+    const tristes = (e.cuaderno ? 1 : 0) + (e.caja ? 1 : 0) + (e.mascota ? 1 : 0);
     const pintar = (fila, cuantos) => {
       fila.puntos.forEach((p, i) => p.setTexture(i < cuantos ? fila.claveActiva : 'punto_vacio'));
     };

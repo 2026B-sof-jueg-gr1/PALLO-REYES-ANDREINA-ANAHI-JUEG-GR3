@@ -368,11 +368,69 @@ function dibujarIconos(scene) {
     ctx.arc(16, 19, 1.6, 0, Math.PI * 2);
     ctx.fill();
   });
+
+  hacer('ic_silbato', (ctx) => {
+    ctx.strokeStyle = crema;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(7, 21);
+    ctx.lineTo(22, 12);
+    ctx.lineTo(26, 16);
+    ctx.lineTo(11, 25);
+    ctx.closePath();
+    ctx.fillStyle = '#b9895f';
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = '#ffe9a0';
+    ctx.fillRect(18, 14, 3, 3);
+    ctx.strokeStyle = '#ffe9a0';
+    ctx.lineWidth = 1.2;
+    for (const [x, y] of [[22, 8], [26, 6]]) {
+      ctx.beginPath();
+      ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  });
+
+  hacer('ic_pelota', (ctx) => {
+    ctx.fillStyle = '#e98b75';
+    ctx.beginPath();
+    ctx.arc(16, 16, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.strokeStyle = '#fff0d0';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.arc(16, 16, 6, -0.8, 1.2);
+    ctx.stroke();
+    ctx.fillStyle = '#fff0d0';
+    ctx.beginPath();
+    ctx.arc(13, 12, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+  });
 }
 
 // ---------- brotes de luz, puntos seguros, puntos del contador ----------
 
 function dibujarDecorados(scene) {
+  // Ave pequeña para el recuerdo del silbato
+  {
+    const c = lienzo(28, 20);
+    const ctx = c.getContext('2d');
+    ctx.strokeStyle = '#f6e8b0';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(3, 12);
+    ctx.quadraticCurveTo(8, 5, 14, 12);
+    ctx.quadraticCurveTo(20, 5, 25, 12);
+    ctx.stroke();
+    ctx.fillStyle = '#f6e8b0';
+    ctx.beginPath();
+    ctx.arc(14, 12, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+    registrar(scene, 'ave_recuerdo', c);
+  }
+
   // Flor de luz
   {
     const c = lienzo(24, 36);
